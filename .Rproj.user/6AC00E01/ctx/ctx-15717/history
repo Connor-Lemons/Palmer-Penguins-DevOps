@@ -1,0 +1,426 @@
+renv::init()
+renv::snapshot()
+renv::snapshot()
+python
+py
+install.packages("reticulate")
+renv::snapshot()
+library(reticulate)
+renv::snapshot()
+py
+py -m venv .venv
+{venv}
+venv
+py venv
+python -m venv .venv
+source .venv /bin/activate
+1 + 1
+reticulate::repl_python()
+py -m venv .venv
+python -m venv .venv
+venv .venv
+py venv .venv
+py -m venv .venv
+py -m venv .venv
+quit
+()
+system("py -m venv .venv")
+use_virtualenv(".venv")
+library(reticulate)
+use_virtualenv(".venv")
+system("py -m venv .venv")
+library(reticulate)
+use_virtualenv(".venv")
+use_virtualenv(".venv", required = TRUE)
+source .venv /bin/activate
+system("source .venv /bin/activate")
+py_config()
+venv_path <- normalizePath(".venv", winslash = "/")
+use_python(paste0(venv_path, "/bin/python"), required = TRUE)
+.venv\Scripts\activate
+use_virtualenv(venv_path, required = TRUE)
+venv_path <- normalizePath(".venv", winslash = "/")
+use_virtualenv(venv_path, required = TRUE)
+system("use_virtualenv(venv_path, required = TRUE)")
+py_config()
+library(reticulate)
+venv_path <- normalizePath(".venv", winslash = "/")
+use_virtualenv(venv_path, required = TRUE)
+py_config()
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+pip install palmerpenguins
+quit
+py_config()
+palmerpenguins
+palmerpenguins::path_to_file()
+palmerpenguins
+install.packages("palmerpenguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+df <- palmerpenguins::penguins
+renv::snapshot()
+install(pandas)
+install.packages(pandas)
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+pip install palmerpenguins
+quit
+pip install palmerpenguins
+pip install palmerpenguins::penguins
+palmerpenguins::penguins
+reticulate::repl_python()
+df = penguins.load_penguins().dropna()
+df.head(3)
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+quit
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+quit
+py_install(c("palmerpenguins", "pandas", "numpy", "scikit-learn"), envname = "C:/Users/Connor Emmons/Documents/DevOps/.venv")
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+df = penguins.load_penguins().dropna()
+df.head(3)
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+quit
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+palmerpenguins
+print(f"R^2 {model.score(X,y)}")
+print(f"Intercept {model.intercept_}")
+print(f"Columns {X.columns}")
+print(f"Coefficients {model.coef_}")
+X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)
+y = df['body_mass_g']
+model = LinearRegression().fit(X, y)
+quit
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+reticulate::repl_python()
+quit
+reticulate::repl_python()
+from palmerpenguins import penguins
+from palmerpenguins import penguins
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+df = penguins.load_penguins().dropna()
+df.head(3)
+X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)
+y = df['body_mass_g']
+model = LinearRegression().fit(X, y)
+print(f"R^2 {model.score(X,y)}")
+print(f"Intercept {model.intercept_}")
+print(f"Columns {X.columns}")
+print(f"Coefficients {model.coef_}")
+pip install jupyter
+.\pip install jupyter
+pip freeze > requirements.txt
+quit
+system("pip install jupyter")
+system("pip freeze > requirements.txt")
+system(".\pip freeze > requirements.txt")
+system("pip freeze > requirements.txt")
+py_config()
+system("cd")
+reticulate
+reticulate::py pip freeze > requirements.txt
+reticulate::py
+pip freeze > requirements.txt
+reticulate::repl_python()
+pip freeze > requirements.txt
+quit
+renv::activate
+renv::activate()()
+renv::activate()
+library(reticulate)
+venv_path <- normalizePath(".venv", mustWork = TRUE)
+use_virtualenv(venv_path, required = TRUE)
+reticulate::repl_python()
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+df = penguins.load_penguins().dropna()
+df.head(3)
+X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)
+y = df['body_mass_g']
+model = LinearRegression().fit(X, y)
+print(f"R^2 {model.score(X,y)}")
+print(f"Intercept {model.intercept_}")
+print(f"Columns {X.columns}")
+print(f"Coefficients {model.coef_}")
+from vetiver import VetiverModel
+v = VetiverModel(model, model_name='penguin_model', prototype_data=X)
+from pins import board_folder
+from vetiver import vetiver_pin_write
+model_board = board_folder("/data/model", allow_pickle_read = True)
+vetiver_pin_write(model_board, v)
+from vetiver import VetiverAPI
+app = VetiverAPI(v, check_prototype = True)
+quit
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+df <- palmerpenguins::penguins
+df %>%
+group_by(species, sex) %>%
+summarise(
+across(
+where(is.numeric),
+\(x) mean(x, na.rm = TRUE)
+)
+) %>%
+knitr::kable()
+df %>%
+ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+geom_point() +
+geom_smooth(method = "lm")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+df <- dplyr::tbl(con, "penguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+df <- dplyr::tbl(con, "penguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+df <- palmerpenguins::penguins
+renv::init()
+df %>%
+ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+geom_point() +
+geom_smooth(method = "lm")
+renv::snapshot()
+DBI::dbDisconnect(con)
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+df <- dplyr::tbl(con, "penguins")
+install.packages("dbplyr")
+renv::snapshot()
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+df <- dplyr::tbl(con, "penguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+df <- dplyr::tbl(con, "penguins")
+df %>%
+group_by(species, sex) %>%
+summarise(
+across(
+where(is.numeric),
+\(x) mean(x, na.rm = TRUE)
+)
+) %>%
+dplyr::collect() %>%
+knitr::kable()
+df %>%
+ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+geom_point() +
+geom_smooth(method = "lm")
+DBI::dbDisconnect(con)
+renv::status()
+?renv::status()
+renv::snapshot()
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+df <- dplyr::tbl(con, "penguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)
+df <- dplyr::tbl(con, "penguins")
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)
+df <- dplyr::tbl(con, "penguins")
+df %>%
+group_by(species, sex) %>%
+summarise(
+across(
+where(is.numeric),
+\(x) mean(x, na.rm = TRUE)
+)
+) %>%
+dplyr::collect() %>%
+knitr::kable()
+df %>%
+group_by(species, sex) %>%
+summarise(
+across(
+ends_with("mm") | ends_with("g"),
+\(x) mean(x, na.rm = TRUE)
+)
+) %>%
+dplyr::collect() %>%
+knitr::kable()
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)
+df <- dplyr::tbl(con, "penguins")
+df %>%
+group_by(species, sex) %>%
+summarise(
+across(
+ends_with("mm") | ends_with("g"),
+\(x) mean(x, na.rm = TRUE)
+)
+) %>%
+dplyr::collect() %>%
+knitr::kable()
+df %>%
+ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+geom_point() +
+geom_smooth(method = "lm")
+DBI::dbDisconnect(con)
+renv::init()()
+renv::status()
+renv::init()
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbplyr)
+library(DBI)
+con <- DBI::dbConnect(
+duckdb::duckdb(),
+dbdir = "my-db.duckdb"
+)
+dbWriteTable(con, "penguins", palmerpenguins::penguins, overwrite = TRUE)
+df <- dplyr::tbl(con, "penguins")
+df %>%
+ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
+geom_point() +
+geom_smooth(method = "lm")
+DBI::dbDisconnect(con)
+library(reticulate)
+venv_path <- normalizePath(".venv", mustWork = TRUE)
+use_virtualenv(venv_path, required = TRUE)
+reticulate::repl_python()
+import duckdb
+con = duckdb.connect('my-db.duckdb')
+df = con.execute("SELECT * FROM penguins").fetchdf().dropna()
+con.close()
+df.head(3)
+exit
+library(reticulate)
+venv_path <- normalizePath(".venv", mustWork = TRUE)
+use_virtualenv(venv_path, required = TRUE)
+reticulate::repl_python()
+import duckdb
+con = duckdb.connect('my-db.duckdb')
+df = con.execute("SELECT * FROM penguins").fetchdf().dropna()
+con.close()
+df.head(3)
+from palmerpenguins import penguins
+from pandas import get_dummies
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import preprocessing
+X = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)
+y = df['body_mass_g']
+model = LinearRegression().fit(X, y)
+print(f"R^2 {model.score(X,y)}")
+print(f"Intercept {model.intercept_}")
+print(f"Columns {X.columns}")
+print(f"Coefficients {model.coef_}")
+from vetiver import VetiverModel
+v = VetiverModel(model, model_name='penguin_model', prototype_data=X)
+from pins import board_folder
+from vetiver import vetiver_pin_write
+model_board = board_folder("/data/model", allow_pickle_read = True)
+vetiver_pin_write(model_board, v)
+from vetiver import VetiverAPI
+app = VetiverAPI(v, check_prototype = True)
