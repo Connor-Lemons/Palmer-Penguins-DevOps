@@ -5,6 +5,12 @@ format:
     code-fold: true
 ---
 
+```{r}
+library(reticulate)
+venv_path <- normalizePath(".venv", mustWork = TRUE) 
+use_virtualenv(venv_path, required = TRUE)
+```
+
 ```{python}
 from palmerpenguins import penguins
 from pandas import get_dummies
