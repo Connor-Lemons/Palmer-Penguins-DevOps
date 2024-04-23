@@ -42,4 +42,10 @@ df %>%
   geom_point() + 
   geom_smooth(method = "lm")
 DBI::dbDisconnect(con)
+
+#library(reticulate)
+
+#venv_path <- normalizePath(".venv", mustWork = TRUE) 
+
+#use_virtualenv(venv_path, required = TRUE)
 ```

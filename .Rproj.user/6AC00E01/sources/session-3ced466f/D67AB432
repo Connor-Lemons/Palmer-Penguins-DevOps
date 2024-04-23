@@ -3,7 +3,7 @@
     "path": "~/DevOps/eda.qmd",
     "project_path": "eda.qmd",
     "type": "quarto_markdown",
-    "hash": "2089645249",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1710357276545.0,
@@ -16,16 +16,16 @@
         "Source": "Source",
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
-        "cursorPosition": "9,0",
+        "cursorPosition": "38,0",
         "scrollLine": "0",
-        "rmdVisualModeLocation": "230:288"
+        "rmdVisualModeLocation": "809:1566"
     },
     "folds": "",
-    "lastKnownWriteTime": 1713798231,
+    "lastKnownWriteTime": 1713839954,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1713798231592,
+    "last_content_update": 1713839954451,
     "read_only": false,
     "read_only_alternatives": []
 }
