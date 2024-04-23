@@ -7,8 +7,9 @@ format:
 
 ```{r}
 library(reticulate)
-venv_path <- normalizePath(".venv", mustWork = TRUE) 
-use_virtualenv(venv_path, required = TRUE)
+venv_path <- normalizePath(".venv", mustWork = TRUE)
+Sys.setenv(RETICULATE_PYTHON = paste0(venv_path, "/Scripts/python.exe"))
+reticulate::use_virtualenv(venv_path, required = TRUE)
 ```
 
 ```{python}

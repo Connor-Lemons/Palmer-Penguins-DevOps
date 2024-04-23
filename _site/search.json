@@ -4,7 +4,7 @@
     "href": "model.html",
     "title": "Model",
     "section": "",
-    "text": "Code\nlibrary(reticulate)\nvenv_path &lt;- normalizePath(\".venv\", mustWork = TRUE) \nuse_virtualenv(venv_path, required = TRUE)\nCode\nfrom palmerpenguins import penguins\nfrom pandas import get_dummies\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn import preprocessing"
+    "text": "Code\nlibrary(reticulate)\nvenv_path &lt;- normalizePath(\".venv\", mustWork = TRUE)\nSys.setenv(RETICULATE_PYTHON = paste0(venv_path, \"/Scripts/python.exe\"))\nreticulate::use_virtualenv(venv_path, required = TRUE)\nCode\nfrom palmerpenguins import penguins\nfrom pandas import get_dummies\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn import preprocessing"
   },
   {
     "objectID": "model.html#get-data",
@@ -39,7 +39,7 @@
     "href": "model.html#save-to-board",
     "title": "Model",
     "section": "Save to Board",
-    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240422T213803Z-a6f9b"
+    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240422T224007Z-a6f9b"
   },
   {
     "objectID": "model.html#turn-model-into-api",
