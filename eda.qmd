@@ -5,10 +5,6 @@ format:
     code-fold: true
 ---
 
-```{r}
-renv::activate()
-```
-
 ## Penguin Size and Mass by Sex and Species
 
 ```{r}
@@ -47,3 +43,5 @@ df %>%
   geom_smooth(method = "lm")
 DBI::dbDisconnect(con)
 ```
+
+renv::activate()
