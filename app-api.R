@@ -4,7 +4,7 @@ api_url <- "http://127.0.0.1:8080/predict"
 
 ui <- fluidPage(
   titlePanel("Penguin Mass Predictor"),
-
+  
   # Model input values
   sidebarLayout(
     sidebarPanel(
@@ -32,7 +32,7 @@ ui <- fluidPage(
         "Predict"
       )
     ),
-
+    
     mainPanel(
       h2("Penguin Parameters"),
       verbatimTextOutput("vals"),
@@ -52,7 +52,7 @@ server <- function(input, output) {
       sex_male = input$sex == "Male"
     )
   )
-
+  
   # Fetch prediction from API
   pred <- eventReactive(
     input$predict,
@@ -62,7 +62,7 @@ server <- function(input, output) {
       httr2::resp_body_json(),
     ignoreInit = TRUE
   )
-
+  
   # Render to UI
   output$pred <- renderText(pred()$predict[[1]])
   output$vals <- renderPrint(vals())

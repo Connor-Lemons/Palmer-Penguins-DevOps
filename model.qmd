@@ -73,3 +73,5 @@ venv_path \<- normalizePath(".venv", mustWork = TRUE)
 Sys.setenv(RETICULATE_PYTHON = paste0(venv_path, "/Scripts/python.exe"))
 
 reticulate::use_virtualenv(venv_path, required = TRUE)
+
+app.run(port = 8080)

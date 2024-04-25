@@ -39,14 +39,14 @@
     "href": "model.html#save-to-board",
     "title": "Model",
     "section": "Save to Board",
-    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240423T080613Z-82872"
+    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240424T232636Z-82872"
   },
   {
     "objectID": "model.html#turn-model-into-api",
     "href": "model.html#turn-model-into-api",
     "title": "Model",
     "section": "Turn model into API",
-    "text": "Turn model into API\n\n\nCode\nfrom vetiver import VetiverAPI\napp = VetiverAPI(v, check_prototype = True)\n\n\nlibrary(reticulate)\nvenv_path &lt;- normalizePath(“.venv”, mustWork = TRUE)\nSys.setenv(RETICULATE_PYTHON = paste0(venv_path, “/Scripts/python.exe”))\nreticulate::use_virtualenv(venv_path, required = TRUE)"
+    "text": "Turn model into API\n\n\nCode\nfrom vetiver import VetiverAPI\napp = VetiverAPI(v, check_prototype = True)\n\n\nlibrary(reticulate)\nvenv_path &lt;- normalizePath(“.venv”, mustWork = TRUE)\nSys.setenv(RETICULATE_PYTHON = paste0(venv_path, “/Scripts/python.exe”))\nreticulate::use_virtualenv(venv_path, required = TRUE)\napp.run(port = 8080)"
   },
   {
     "objectID": "eda.html",
