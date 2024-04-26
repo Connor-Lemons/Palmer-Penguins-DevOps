@@ -1,73 +1,136 @@
 [
   {
+    "objectID": "project4.html",
+    "href": "project4.html",
+    "title": "Species - Data Modeling",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\nlibrary(discrim)\nlibrary(ggpubr)\nlibrary(klaR)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values"
+  },
+  {
+    "objectID": "project4.html#training-and-testing-data",
+    "href": "project4.html#training-and-testing-data",
+    "title": "Species - Data Modeling",
+    "section": "Training and Testing Data",
+    "text": "Training and Testing Data\nAs before, split the data into testing and training sets. As before, this is an 80/20 split and the proportion will be maintained for each of the three islands.\n\n\nCode\nset.seed(1)\npenguins_split_island = initial_split(penguins, prop = 0.8, strata = island)\npenguins_train_island = training(penguins_split_island)\npenguins_test_island = testing(penguins_split_island)"
+  },
+  {
+    "objectID": "project4.html#linear-discriminant-analysis",
+    "href": "project4.html#linear-discriminant-analysis",
+    "title": "Species - Data Modeling",
+    "section": "Linear Discriminant Analysis",
+    "text": "Linear Discriminant Analysis\nFirst, as before, try linear discriminant analysis.\n\n\nCode\nlda_spec = discrim_linear() |&gt;\n  set_mode(\"classification\") |&gt;\n  set_engine(\"MASS\")\n\nlda_fit_island = lda_spec |&gt;\n  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train_island)\n\n\n\n\nCode\nlda_fit_island\n\n\nparsnip model object\n\nCall:\nlda(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + \n    body_mass_g, data = data)\n\nPrior probabilities of groups:\n   Biscoe     Dream Torgersen \n0.4905660 0.3698113 0.1396226 \n\nGroup means:\n          bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\nBiscoe          45.21000      15.98308          209.9385    4708.654\nDream           44.22041      18.33980          192.8265    3714.796\nTorgersen       38.76757      18.56216          191.0541    3734.459\n\nCoefficients of linear discriminants:\n                           LD1           LD2\nbill_length_mm    -0.104249589 -0.2440371439\nbill_depth_mm     -0.355998297  0.2301004656\nflipper_length_mm  0.031031664  0.0317183160\nbody_mass_g        0.001035171  0.0004966507\n\nProportion of trace:\n  LD1   LD2 \n0.867 0.133 \n\n\n\n\nCode\nlda_fit_island |&gt; \n  extract_fit_engine() |&gt;\n  plot()\n\n\n\n\n\n\n\n\n\n\n\nCode\n(lda_acc_island = augment(lda_fit_island, new_data = penguins_test_island) |&gt;\n  accuracy(truth = island, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706\n\n\nHere, the test accuracy is only 0.706. This indicates that, on the test data set, the model was about 71% accurate. In order to improve the accuracy, try different models."
+  },
+  {
+    "objectID": "project4.html#quadratic-discriminant-analysis",
+    "href": "project4.html#quadratic-discriminant-analysis",
+    "title": "Species - Data Modeling",
+    "section": "Quadratic Discriminant Analysis",
+    "text": "Quadratic Discriminant Analysis\nQuadratic discriminant analysis is similar to linear discriminant analysis in that it also seeks to find combinations of the predictors that separate two or more classes, but unlike LDA, these combinations are allowed to be non-linear.\n\n\nCode\nqda_spec = discrim_quad() |&gt;\n  set_mode(\"classification\") |&gt;\n  set_engine(\"MASS\")\n\nqda_fit = qda_spec |&gt;\n  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train_island)\n\n\nHere is the model output. Note that it doesn’t have the coefficients for the combinations of the variables.\n\n\nCode\nqda_fit\n\n\nparsnip model object\n\nCall:\nqda(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + \n    body_mass_g, data = data)\n\nPrior probabilities of groups:\n   Biscoe     Dream Torgersen \n0.4905660 0.3698113 0.1396226 \n\nGroup means:\n          bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\nBiscoe          45.21000      15.98308          209.9385    4708.654\nDream           44.22041      18.33980          192.8265    3714.796\nTorgersen       38.76757      18.56216          191.0541    3734.459\n\n\n\n\nCode\n(qda_acc = augment(qda_fit, new_data = penguins_test_island) |&gt;\n  accuracy(truth = island, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.676\n\n\nHere, the test accuracy is actually a little lower than LDA at 0.676. Next, try naive Bayes."
+  },
+  {
+    "objectID": "project4.html#naive-bayes",
+    "href": "project4.html#naive-bayes",
+    "title": "Species - Data Modeling",
+    "section": "Naive Bayes",
+    "text": "Naive Bayes\nNaive Bayes relies on Bayes’ Theorem, which is a method to find conditional probability. The reason that Naive Bayes is “naive” is because it assumes independence, or in other words, the presence of a particular feature in a class is unrelated to the presence of any other feature.\n\n\nCode\nnb_spec = naive_Bayes() |&gt;\n  set_mode(\"classification\") |&gt; \n  set_engine(\"klaR\") |&gt;\n  set_args(usekernel = FALSE)\n\nnb_fit = nb_spec |&gt;\n  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train_island)\n\n\nOutputting the model isn’t very helpful, and there isn’t a great way to visualize the model.\n\n\nCode\n(nb_acc = augment(nb_fit, new_data = penguins_test_island) |&gt;\n  accuracy(truth = island, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.735\n\n\nFor this model, the accuracy is 0.735, which is the best of the three models so far. Next, try k-nearest neighbors modeling."
+  },
+  {
+    "objectID": "project4.html#k-nearest-neighbors-with-cross-validation",
+    "href": "project4.html#k-nearest-neighbors-with-cross-validation",
+    "title": "Species - Data Modeling",
+    "section": "K-Nearest Neighbors with Cross Validation",
+    "text": "K-Nearest Neighbors with Cross Validation\nK-nearest neighbors attempts to predict the class of a given point based off of the k nearest neighbors. With this model, use k-fold cross validation to determine the optimal number of neighbors to consider.\nFirst, define the parameter to tune (in this case, the number of neighbors) and create the workflow.\n\n\nCode\nknn_spec &lt;- nearest_neighbor(neighbors = tune()) %&gt;%\n  set_mode(\"classification\") %&gt;%\n  set_engine(\"kknn\")\n\nknn_rec = recipe(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train_island)\n\nknn_wf = workflow() |&gt;\n  add_recipe(knn_rec) |&gt;\n  add_model(knn_spec)\n\n\nNext, split the data into different folds for the cross validation.\n\n\nCode\npenguins_folds = vfold_cv(penguins_train_island, v = 10, strata = island)\n\n\nCreate the grid of values to test in the cross validation and perform the cross validation. In this case, test values 1-10.\n\n\nCode\nneighbor_grid &lt;- grid_regular(neighbors(range = c(1, 10)), levels = 10)\ntune_res = tune_grid(\n  object = knn_wf, \n  resamples = penguins_folds, \n  grid = neighbor_grid\n)\n\n\nVisualizing the results of the tune. The metric that the models will be evaluated on will be accuracy, though these plots also display other metrics that can be used.\n\n\nCode\nautoplot(tune_res)\n\n\n\n\n\n\n\n\n\nSelect the best value for k, finalize the workflow, and fit the final model. In this case, k=5 was optimal for accuracy.\n\n\nCode\n(best_neighbor = select_best(tune_res, metric = \"accuracy\"))\n\n\n# A tibble: 1 × 2\n  neighbors .config              \n      &lt;int&gt; &lt;chr&gt;                \n1         5 Preprocessor1_Model05\n\n\nCode\nfinal_wf = finalize_workflow(knn_wf, best_neighbor)\nfinal_fit = fit(final_wf, data = penguins_train_island)\n(knn_acc = augment(final_fit, new_data = penguins_test_island) |&gt;\n  accuracy(truth = island, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706\n\n\nThe accuracy for this model was 0.706, which is similar to LDA. The final accuracy of each of the models are shown below.\n\n\nCode\nlda_acc_island\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706\n\n\nCode\nqda_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.676\n\n\nCode\nnb_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.735\n\n\nCode\nknn_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706"
+  },
+  {
+    "objectID": "project2.html",
+    "href": "project2.html",
+    "title": "Species - Data Modeling",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\nlibrary(discrim)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values"
+  },
+  {
+    "objectID": "project2.html#training-and-testing-data",
+    "href": "project2.html#training-and-testing-data",
+    "title": "Species - Data Modeling",
+    "section": "Training and Testing Data",
+    "text": "Training and Testing Data\nBefore modeling, it is useful to split the data into a training and a test set. This allows estimating the test error by evaluating each model’s performance on the test set. Stratifying by species ensures that the proportions of each species in each the test and training set are equal. This split is an 80/20 split.\n\n\nCode\nset.seed(2025)\npenguins_split = initial_split(penguins, prop = 0.8, strata = species)\npenguins_train = training(penguins_split)\npenguins_test = testing(penguins_split)"
+  },
+  {
+    "objectID": "project2.html#linear-discriminant-analysis",
+    "href": "project2.html#linear-discriminant-analysis",
+    "title": "Species - Data Modeling",
+    "section": "Linear Discriminant Analysis",
+    "text": "Linear Discriminant Analysis\nThe simplest approach to classification is likely logistic regression, and for binary classification, it has reasonably good performance. Unfortunately, the “species” variable can take 3 different values, so this isn’t ideal. Instead, use LDA, which seeks to find linear combinations of features that separate two or more classes.\n\n\nCode\nlda_spec = discrim_linear() |&gt;\n  set_mode(\"classification\") |&gt;\n  set_engine(\"MASS\")\n\nlda_fit = lda_spec |&gt;\n  fit(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train)\n\n\nOutputting the fitted model gives some useful information…\n\n\nCode\nlda_fit\n\n\nparsnip model object\n\nCall:\nlda(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm + \n    body_mass_g, data = data)\n\nPrior probabilities of groups:\n   Adelie Chinstrap    Gentoo \n0.4377358 0.2037736 0.3584906 \n\nGroup means:\n          bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\nAdelie          38.91552      18.39138          190.5431    3721.983\nChinstrap       48.88704      18.39630          195.7963    3731.019\nGentoo          47.40211      14.90421          216.8421    5062.895\n\nCoefficients of linear discriminants:\n                           LD1          LD2\nbill_length_mm    -0.079917833 -0.403427627\nbill_depth_mm      1.037202775 -0.001591007\nflipper_length_mm -0.090586781  0.015689977\nbody_mass_g       -0.001306911  0.001593688\n\nProportion of trace:\n   LD1    LD2 \n0.8735 0.1265 \n\n\n…but it’s far more useful to get a visualization of the model.\n\n\nCode\nlda_fit |&gt; \n  extract_fit_engine() |&gt;\n  plot()\n\n\n\n\n\n\n\n\n\nLD1 and LD2 are linear combinations of the 4 predictors, the coefficients of which can be seen in the output of the fitted model. Here, it is evident that the model has done a reasonably good job differentiating the three species from each other. The Gentoo penguins are well-separated from the other two, and though there may be a little overlap between the Adelie and Chinstrap penguin clusters, they are relatively separate.\nNext, calculate the performance of the model on the test set.\n\n\nCode\n(lda_acc = augment(lda_fit, new_data = penguins_test) |&gt;\n  accuracy(truth = species, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass         1\n\n\nThe model predicted every penguin in the test set accurately."
+  },
+  {
     "objectID": "model.html",
     "href": "model.html",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "",
     "text": "Code\nfrom palmerpenguins import penguins\nfrom pandas import get_dummies\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn import preprocessing"
   },
   {
     "objectID": "model.html#get-data",
     "href": "model.html#get-data",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Get Data",
     "text": "Get Data\n\n\nCode\nimport duckdb\ncon = duckdb.connect('my-db.duckdb')\ndf = con.execute(\"SELECT * FROM penguins\").fetchdf().dropna()\ncon.close()\n\ndf.head(3)\n\n\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nyear\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nmale\n2007\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nfemale\n2007\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nfemale\n2007"
   },
   {
     "objectID": "model.html#define-model-and-fit",
     "href": "model.html#define-model-and-fit",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Define Model and Fit",
     "text": "Define Model and Fit\n\n\nCode\nX = get_dummies(df[['bill_length_mm', 'species', 'sex']], drop_first = True)\ny = df['body_mass_g']\n\nmodel = LinearRegression().fit(X, y)"
   },
   {
     "objectID": "model.html#get-some-information",
     "href": "model.html#get-some-information",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Get some information",
     "text": "Get some information\n\n\nCode\nprint(f\"R^2 {model.score(X,y)}\")\nprint(f\"Intercept {model.intercept_}\")\nprint(f\"Columns {X.columns}\")\nprint(f\"Coefficients {model.coef_}\")\n\n\nR^2 0.8555368759537614\nIntercept 2169.2697209393996\nColumns Index(['bill_length_mm', 'species_Chinstrap', 'species_Gentoo', 'sex_male'], dtype='object')\nCoefficients [  32.53688677 -298.76553447 1094.86739145  547.36692408]"
   },
   {
     "objectID": "model.html#turn-into-vetiver-model",
     "href": "model.html#turn-into-vetiver-model",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Turn into Vetiver Model",
     "text": "Turn into Vetiver Model\n\n\nCode\nfrom vetiver import VetiverModel\nv = VetiverModel(model, model_name='penguin_model', prototype_data=X)"
   },
   {
     "objectID": "model.html#save-to-board",
     "href": "model.html#save-to-board",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Save to Board",
-    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240425T054409Z-565d5"
+    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240426T031131Z-565d5"
   },
   {
     "objectID": "model.html#turn-model-into-api",
     "href": "model.html#turn-model-into-api",
-    "title": "Model",
+    "title": "Proof 2 - Model",
     "section": "Turn model into API",
-    "text": "Turn model into API\n\n\nCode\nfrom vetiver import VetiverAPI\napp = VetiverAPI(v, check_prototype = True)\n\n\nlibrary(reticulate)\nvenv_path &lt;- normalizePath(“.venv”, mustWork = TRUE)\nSys.setenv(RETICULATE_PYTHON = paste0(venv_path, “/Scripts/python.exe”))\nreticulate::use_virtualenv(venv_path, required = TRUE)\napp.run(port = 8080)"
+    "text": "Turn model into API\n\n\nCode\nfrom vetiver import VetiverAPI\napp = VetiverAPI(v, check_prototype = True)\n#app.run(port = 8080)"
   },
   {
     "objectID": "eda.html",
     "href": "eda.html",
-    "title": "Penguins EDA",
+    "title": "Proof 1 - Penguins EDA",
     "section": "",
-    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\nlibrary(dbplyr)\n\n\n\nAttaching package: 'dbplyr'\n\n\nThe following objects are masked from 'package:dplyr':\n\n    ident, sql\n\n\nCode\nlibrary(ggplot2)\nlibrary(DBI)\nlibrary(duckdb)\nlibrary(httr2)\nlibrary(shiny)\n\ncon &lt;- DBI::dbConnect(duckdb::duckdb(), dbdir = \"my-db.duckdb\")\ndf &lt;- dplyr::tbl(con, \"penguins\")\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n        ends_with(\"mm\") | ends_with(\"g\"),\n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  dplyr::collect() %&gt;%\n  knitr::kable()\n\n\n`summarise()` has grouped output by \"species\". You can override using the\n`.groups` argument.\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\n\n\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836"
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\nlibrary(dbplyr)\nlibrary(ggplot2)\nlibrary(DBI)\nlibrary(duckdb)\nlibrary(httr2)\nlibrary(shiny)\n\ncon &lt;- DBI::dbConnect(duckdb::duckdb(), dbdir = \"my-db.duckdb\")\ndf &lt;- dplyr::tbl(con, \"penguins\")\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n        ends_with(\"mm\") | ends_with(\"g\"),\n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  dplyr::collect() %&gt;%\n  knitr::kable()\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\n\n\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836"
   },
   {
     "objectID": "eda.html#penguin-size-and-mass-by-sex-and-species",
     "href": "eda.html#penguin-size-and-mass-by-sex-and-species",
-    "title": "Penguins EDA",
+    "title": "Proof 1 - Penguins EDA",
     "section": "",
-    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\n\nCode\nlibrary(dbplyr)\n\n\n\nAttaching package: 'dbplyr'\n\n\nThe following objects are masked from 'package:dplyr':\n\n    ident, sql\n\n\nCode\nlibrary(ggplot2)\nlibrary(DBI)\nlibrary(duckdb)\nlibrary(httr2)\nlibrary(shiny)\n\ncon &lt;- DBI::dbConnect(duckdb::duckdb(), dbdir = \"my-db.duckdb\")\ndf &lt;- dplyr::tbl(con, \"penguins\")\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n        ends_with(\"mm\") | ends_with(\"g\"),\n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  dplyr::collect() %&gt;%\n  knitr::kable()\n\n\n`summarise()` has grouped output by \"species\". You can override using the\n`.groups` argument.\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\n\n\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836"
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(dplyr)\nlibrary(dbplyr)\nlibrary(ggplot2)\nlibrary(DBI)\nlibrary(duckdb)\nlibrary(httr2)\nlibrary(shiny)\n\ncon &lt;- DBI::dbConnect(duckdb::duckdb(), dbdir = \"my-db.duckdb\")\ndf &lt;- dplyr::tbl(con, \"penguins\")\n\n\n\n\nCode\ndf %&gt;%\n  group_by(species, sex) %&gt;%\n  summarise(\n    across(\n        ends_with(\"mm\") | ends_with(\"g\"),\n      \\(x) mean(x, na.rm = TRUE)\n      )\n    ) %&gt;%\n  dplyr::collect() %&gt;%\n  knitr::kable()\n\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\nsex\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\n\n\n\n\nAdelie\nNA\n37.84000\n18.32000\n185.6000\n3540.000\n\n\nAdelie\nfemale\n37.25753\n17.62192\n187.7945\n3368.836\n\n\nAdelie\nmale\n40.39041\n19.07260\n192.4110\n4043.493\n\n\nChinstrap\nfemale\n46.57353\n17.58824\n191.7353\n3527.206\n\n\nChinstrap\nmale\n51.09412\n19.25294\n199.9118\n3938.971\n\n\nGentoo\nNA\n45.62500\n14.55000\n215.7500\n4587.500\n\n\nGentoo\nfemale\n45.56379\n14.23793\n212.7069\n4679.741\n\n\nGentoo\nmale\n49.47377\n15.71803\n221.5410\n5484.836"
   },
   {
     "objectID": "eda.html#penguin-size-vs-mass-by-species",
     "href": "eda.html#penguin-size-vs-mass-by-species",
-    "title": "Penguins EDA",
+    "title": "Proof 1 - Penguins EDA",
     "section": "Penguin Size vs Mass by Species",
-    "text": "Penguin Size vs Mass by Species\n\n\nCode\ndf %&gt;%\n  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +\n  geom_point() + \n  geom_smooth(method = \"lm\")\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nCode\nDBI::dbDisconnect(con)\n\n\nrenv::activate()"
+    "text": "Penguin Size vs Mass by Species\n\n\nCode\ndf %&gt;%\n  ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +\n  geom_point() + \n  geom_smooth(method = \"lm\")\n\n\n\n\n\n\n\n\n\n\n\nCode\nDBI::dbDisconnect(con)\n\n\nrenv::activate()\nlibrary(reticulate)\nreticulate::use_virtualenv(normalizePath(“.venv”, mustWork = TRUE), required = TRUE)"
   },
   {
     "objectID": "about.html",
@@ -82,5 +145,61 @@
     "title": "DevOps",
     "section": "",
     "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Species - Data Visualization",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting"
+  },
+  {
+    "objectID": "project.html#install-required-packages",
+    "href": "project.html#install-required-packages",
+    "title": "Species - Data Visualization",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting"
+  },
+  {
+    "objectID": "project.html#view-the-data",
+    "href": "project.html#view-the-data",
+    "title": "Species - Data Visualization",
+    "section": "View the Data",
+    "text": "View the Data\n\n\nCode\nhead(penguins)\n\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           36.7          19.3               193        3450\n5 Adelie  Torgersen           39.3          20.6               190        3650\n6 Adelie  Torgersen           38.9          17.8               181        3625\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "project.html#visualize-the-data",
+    "href": "project.html#visualize-the-data",
+    "title": "Species - Data Visualization",
+    "section": "Visualize the Data",
+    "text": "Visualize the Data\nThe goal here is to build a model which can predict the species of penguin based on the other parameters provided in the dataset. In order to get a better sense of which variables might be the strongest predictors of species, generate box plots for each numerical variable with each of the three species.\n\n\nCode\npenguins_long &lt;- pivot_longer(penguins, \n                              cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g),\n                              names_to = \"Measurement\",\n                              values_to = \"Value\")\n\nggplot(penguins_long, aes(x = species, y = Value, fill = species)) +\n  geom_boxplot() + \n  facet_wrap(~ Measurement, scales = \"free\") +\n  labs(title = \"Comparison of Penguin Measurements by Species\",\n       x = \"Species\",\n       y = \"Value\") +\n  theme_minimal() +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Improve x-axis label readability\n\n\n\n\n\n\n\n\n\nFrom these plots, on average, Gentoo penguins are heavier, Adelie penguins have shorter bills, and Chinstrap penguins have longer/deeper bills.\nTo get a little more detail, generate 4 plots, one for each variable, that show the distribution of each species of penguin relative to that variable.\n\n\nCode\nggplot(data = penguins, aes(x = bill_depth_mm, fill = species, color = species)) +\n  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing\n  scale_fill_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  scale_color_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  labs(title = \"Distribution of Bill Depth by Penguin Species\",\n       x = \"Bill Depth (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = bill_length_mm, fill = species, color = species)) +\n  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing\n  scale_fill_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  scale_color_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  labs(title = \"Distribution of Bill Length by Penguin Species\",\n       x = \"Bill Length (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = body_mass_g, fill = species, color = species)) +\n  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing\n  scale_fill_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  scale_color_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  labs(title = \"Distribution of Body Mass by Penguin Species\",\n       x = \"Body Mass (g)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = flipper_length_mm, fill = species, color = species)) +\n  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing\n  scale_fill_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  scale_color_manual(values = c(\"Adelie\" = \"red\", \"Chinstrap\" = \"green\", \"Gentoo\" = \"blue\")) +\n  labs(title = \"Distribution of Flipper Length by Penguin Species\",\n       x = \"Flipper Length (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nNote that some of these distributions look almost bimodal, or at least have some deviation from a unimodal distribution at a given point. Because these are all physical characteristics, it is expected that there will be a difference between male and female penguins. These secondary bumps are likely the result of not filtering for sex before plotting. Nonetheless, these plots give a good idea of the distributions of each species in the context of each numerical variable. For example, when looking at the flipper lengths of Adelie and Gentoo penguins, there is almost no overlap in the distributions, or in other words, almost every Adelie penguins’ flippers are smaller than Gentoo penguins’ flippers. By contrast, when looking at Adelie and Chinstrap penguins in the context of body mass, there is almost no difference in the location of the peak, which means that it is unlikely that body mass will be the most important feature when attempting to distinguish between Adelie and Chinstrap penguins."
+  },
+  {
+    "objectID": "project3.html",
+    "href": "project3.html",
+    "title": "Island - Data Visualization",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting"
+  },
+  {
+    "objectID": "project3.html#install-required-packages",
+    "href": "project3.html#install-required-packages",
+    "title": "Island - Data Visualization",
+    "section": "",
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting"
+  },
+  {
+    "objectID": "project3.html#view-the-data",
+    "href": "project3.html#view-the-data",
+    "title": "Island - Data Visualization",
+    "section": "View the Data",
+    "text": "View the Data\n\n\nCode\nhead(penguins)\n\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           36.7          19.3               193        3450\n5 Adelie  Torgersen           39.3          20.6               190        3650\n6 Adelie  Torgersen           38.9          17.8               181        3625\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "project3.html#visualize-the-data",
+    "href": "project3.html#visualize-the-data",
+    "title": "Island - Data Visualization",
+    "section": "Visualize the Data",
+    "text": "Visualize the Data\nAs before with the species visualization, the goal here is to visualize the relationship between the island the penguin lives on and each of the 4 numeric variables.\n\n\nCode\npenguins_long &lt;- pivot_longer(penguins, \n                              cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g),\n                              names_to = \"Measurement\",\n                              values_to = \"Value\")\n\nggplot(penguins_long, aes(x = island, y = Value, fill = island)) +\n  geom_boxplot() + \n  facet_wrap(~ Measurement, scales = \"free\") +\n  labs(title = \"Comparison of Penguin Measurements by Island\",\n       x = \"Island\",\n       y = \"Value\") +\n  theme_minimal() +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Improve x-axis label readability\n\n\n\n\n\n\n\n\n\nTo get a little more detail, generate 4 plots, one for each variable, that show the distribution of each island relative to that variable.\n\n\nCode\nggplot(data = penguins, aes(x = bill_depth_mm, fill = island, color = island)) +\n  geom_density(alpha = 0.5, adjust = 1) +\n  scale_fill_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  scale_color_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  labs(title = \"Distribution of Bill Depth by Island\",\n       x = \"Bill Depth (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = bill_length_mm, fill = island, color = island)) +\n  geom_density(alpha = 0.5, adjust = 1) +\n  scale_fill_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  scale_color_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  labs(title = \"Distribution of Bill Length by Island\",\n       x = \"Bill Length (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = body_mass_g, fill = island, color = island)) +\n  geom_density(alpha = 0.5, adjust = 1) +\n  scale_fill_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  scale_color_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  labs(title = \"Distribution of Body Mass by Island\",\n       x = \"Body Mass (g)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nCode\nggplot(data = penguins, aes(x = flipper_length_mm, fill = island, color = island)) +\n  geom_density(alpha = 0.5, adjust = 1) +\n  scale_fill_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  scale_color_manual(values = c(\"Biscoe\" = \"red\", \"Dream\" = \"green\", \"Torgersen\" = \"blue\")) +\n  labs(title = \"Distribution of Flipper Length by Island\",\n       x = \"Flipper Length (mm)\",\n       y = \"Density\")\n\n\n\n\n\n\n\n\n\nUnlike the species graphs, the distributions for these graphs are not nearly as tight, likely because the physical characteristics of penguins rely more on the species of penguin than the location."
   }
 ]
