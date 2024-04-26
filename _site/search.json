@@ -165,7 +165,7 @@
     "href": "project4.html",
     "title": "Species - Data Modeling",
     "section": "",
-    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\nlibrary(discrim)\nlibrary(ggpubr)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values"
+    "text": "Code\nlibrary(palmerpenguins)\nlibrary(tidymodels)\nlibrary(tidyverse)\nlibrary(ISLR2)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(MASS)\nlibrary(discrim)\nlibrary(ggpubr)\nlibrary(klaR)\n\ntheme_set(theme_classic())\ntidymodels_prefer()\npenguins = palmerpenguins::penguins\n\npenguins = na.omit(penguins) #Eliminates rows with N/A values"
   },
   {
     "objectID": "project4.html#training-and-testing-data",
