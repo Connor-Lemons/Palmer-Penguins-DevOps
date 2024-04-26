@@ -102,7 +102,7 @@
     "href": "model.html#save-to-board",
     "title": "Proof 2 - Model",
     "section": "Save to Board",
-    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240426T031131Z-565d5"
+    "text": "Save to Board\n\n\nCode\nfrom pins import board_folder\nfrom vetiver import vetiver_pin_write\n\nmodel_board = board_folder(\"/data/model\", allow_pickle_read = True)\nvetiver_pin_write(model_board, v)\n\n\nModel Cards provide a framework for transparent, responsible reporting. \n Use the vetiver `.qmd` Quarto template as a place to start, \n with vetiver.model_card()\nWriting pin:\nName: 'penguin_model'\nVersion: 20240426T050240Z-565d5"
   },
   {
     "objectID": "model.html#turn-model-into-api",
@@ -137,14 +137,21 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "This website investigates the Palmer Penguins data set. Specifically, it helps to visualize the data present in this data set in a number of different ways and explores different models in order to predict the species and island of origin of the penguins.\nNote: I left the last two tabs as proof of completion for the labs, but they are not part of what I consider to be the final product.\nThe GitHub repo for this project can be found here: Connor-Lemons/Palmer-Penguins-DevOps: Chapters 1-6 of DevOps for Data Science (github.com)"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "DevOps",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "This is the website I made following along with DevOps for Data Science (do4ds.com). I hope you enjoy!"
+  },
+  {
+    "objectID": "index.html#connor-emmons",
+    "href": "index.html#connor-emmons",
+    "title": "DevOps",
+    "section": "",
+    "text": "This is the website I made following along with DevOps for Data Science (do4ds.com). I hope you enjoy!"
   },
   {
     "objectID": "project.html",
