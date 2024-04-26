@@ -1,0 +1,74 @@
+---
+title: "Species - Data Modeling"
+format:
+  html:
+    code-fold: true
+---
+
+```{r, message=F}
+library(palmerpenguins)
+library(tidymodels)
+library(tidyverse)
+library(ISLR2)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(MASS)
+library(discrim)
+
+theme_set(theme_classic())
+tidymodels_prefer()
+penguins = palmerpenguins::penguins
+
+penguins = na.omit(penguins) #Eliminates rows with N/A values
+```
+
+## Training and Testing Data
+
+Before modeling, it is useful to split the data into a training and a test set. This allows estimating the test error by evaluating each model's performance on the test set. Stratifying by species ensures that the proportions of each species in each the test and training set are equal. This split is an 80/20 split.
+
+```{r}
+set.seed(2025)
+penguins_split = initial_split(penguins, prop = 0.8, strata = species)
+penguins_train = training(penguins_split)
+penguins_test = testing(penguins_split)
+```
+
+## Linear Discriminant Analysis
+
+The simplest approach to classification is likely logistic regression, and for binary classification, it has reasonably good performance. Unfortunately, the "species" variable can take 3 different values, so this isn't ideal. Instead, use LDA, which seeks to find linear combinations of features that separate two or more classes.
+
+```{r}
+lda_spec = discrim_linear() |>
+  set_mode("classification") |>
+  set_engine("MASS")
+
+lda_fit = lda_spec |>
+  fit(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,
+      data = penguins_train)
+```
+
+Outputting the fitted model gives some useful information...
+
+```{r}
+lda_fit
+```
+
+...but it's far more useful to get a visualization of the model.
+
+```{r}
+lda_fit |> 
+  extract_fit_engine() |>
+  plot()
+```
+
+LD1 and LD2 are linear combinations of the 4 predictors, the coefficients of which can be seen in the output of the fitted model. Here, it is evident that the model has done a reasonably good job differentiating the three species from each other. The Gentoo penguins are well-separated from the other two, and though there may be a little overlap between the Adelie and Chinstrap penguin clusters, they are relatively separate.
+
+Next, calculate the performance of the model on the test set.
+
+```{r}
+(lda_acc = augment(lda_fit, new_data = penguins_test) |>
+  accuracy(truth = species, estimate = .pred_class))
+```
+
+The model predicted every penguin in the test set accurately.

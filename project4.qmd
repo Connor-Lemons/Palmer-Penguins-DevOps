@@ -1,0 +1,179 @@
+---
+title: "Species - Data Modeling"
+format:
+  html:
+    code-fold: true
+---
+
+```{r, message=F}
+library(palmerpenguins)
+library(tidymodels)
+library(tidyverse)
+library(ISLR2)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(MASS)
+library(discrim)
+library(ggpubr)
+
+theme_set(theme_classic())
+tidymodels_prefer()
+penguins = palmerpenguins::penguins
+
+penguins = na.omit(penguins) #Eliminates rows with N/A values 
+```
+
+## Training and Testing Data
+
+As before, split the data into testing and training sets. As before, this is an 80/20 split and the proportion will be maintained for each of the three islands.
+
+```{r}
+set.seed(1)
+penguins_split_island = initial_split(penguins, prop = 0.8, strata = island)
+penguins_train_island = training(penguins_split_island)
+penguins_test_island = testing(penguins_split_island)
+```
+
+## Linear Discriminant Analysis
+
+First, as before, try linear discriminant analysis.
+
+```{r}
+lda_spec = discrim_linear() |>
+  set_mode("classification") |>
+  set_engine("MASS")
+
+lda_fit_island = lda_spec |>
+  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,
+      data = penguins_train_island)
+```
+
+```{r}
+lda_fit_island
+```
+
+```{r}
+lda_fit_island |> 
+  extract_fit_engine() |>
+  plot()
+```
+
+```{r}
+(lda_acc_island = augment(lda_fit_island, new_data = penguins_test_island) |>
+  accuracy(truth = island, estimate = .pred_class))
+```
+
+Here, the test accuracy is only 0.706. This indicates that, on the test data set, the model was about 71% accurate. In order to improve the accuracy, try different models.
+
+## Quadratic Discriminant Analysis
+
+Quadratic discriminant analysis is similar to linear discriminant analysis in that it also seeks to find combinations of the predictors that separate two or more classes, but unlike LDA, these combinations are allowed to be non-linear.
+
+```{r}
+qda_spec = discrim_quad() |>
+  set_mode("classification") |>
+  set_engine("MASS")
+
+qda_fit = qda_spec |>
+  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,
+      data = penguins_train_island)
+```
+
+Here is the model output. Note that it doesn't have the coefficients for the combinations of the variables.
+
+```{r}
+qda_fit
+```
+
+```{r}
+(qda_acc = augment(qda_fit, new_data = penguins_test_island) |>
+  accuracy(truth = island, estimate = .pred_class))
+```
+
+Here, the test accuracy is actually a little lower than LDA at 0.676. Next, try naive Bayes.
+
+## Naive Bayes
+
+Naive Bayes relies on Bayes' Theorem, which is a method to find conditional probability. The reason that Naive Bayes is "naive" is because it assumes independence, or in other words, the presence of a particular feature in a class is unrelated to the presence of any other feature.
+
+```{r}
+nb_spec = naive_Bayes() |>
+  set_mode("classification") |> 
+  set_engine("klaR") |>
+  set_args(usekernel = FALSE)
+
+nb_fit = nb_spec |>
+  fit(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,
+      data = penguins_train_island)
+```
+
+Outputting the model isn't very helpful, and there isn't a great way to visualize the model.
+
+```{r, warning=F}
+(nb_acc = augment(nb_fit, new_data = penguins_test_island) |>
+  accuracy(truth = island, estimate = .pred_class))
+```
+
+For this model, the accuracy is 0.735, which is the best of the three models so far. Next, try k-nearest neighbors modeling.
+
+## K-Nearest Neighbors with Cross Validation
+
+K-nearest neighbors attempts to predict the class of a given point based off of the k nearest neighbors. With this model, use k-fold cross validation to determine the optimal number of neighbors to consider.
+
+First, define the parameter to tune (in this case, the number of neighbors) and create the workflow.
+
+```{r}
+knn_spec <- nearest_neighbor(neighbors = tune()) %>%
+  set_mode("classification") %>%
+  set_engine("kknn")
+
+knn_rec = recipe(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,
+      data = penguins_train_island)
+
+knn_wf = workflow() |>
+  add_recipe(knn_rec) |>
+  add_model(knn_spec)
+```
+
+Next, split the data into different folds for the cross validation.
+
+```{r}
+penguins_folds = vfold_cv(penguins_train_island, v = 10, strata = island)
+```
+
+Create the grid of values to test in the cross validation and perform the cross validation. In this case, test values 1-10.
+
+```{r}
+neighbor_grid <- grid_regular(neighbors(range = c(1, 10)), levels = 10)
+tune_res = tune_grid(
+  object = knn_wf, 
+  resamples = penguins_folds, 
+  grid = neighbor_grid
+)
+```
+
+Visualizing the results of the tune. The metric that the models will be evaluated on will be accuracy, though these plots also display other metrics that can be used.
+
+```{r}
+autoplot(tune_res)
+```
+
+Select the best value for k, finalize the workflow, and fit the final model. In this case, k=5 was optimal for accuracy.
+
+```{r}
+(best_neighbor = select_best(tune_res, metric = "accuracy"))
+final_wf = finalize_workflow(knn_wf, best_neighbor)
+final_fit = fit(final_wf, data = penguins_train_island)
+(knn_acc = augment(final_fit, new_data = penguins_test_island) |>
+  accuracy(truth = island, estimate = .pred_class))
+```
+
+The accuracy for this model was 0.706, which is similar to LDA. The final accuracy of each of the models are shown below.
+
+```{r}
+lda_acc_island
+qda_acc
+nb_acc
+knn_acc
+```

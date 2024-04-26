@@ -1,5 +1,5 @@
 ---
-title: "Model"
+title: "Proof 2 - Model"
 format:
   html:
     code-fold: true
@@ -64,14 +64,5 @@ vetiver_pin_write(model_board, v)
 ```{python}
 from vetiver import VetiverAPI
 app = VetiverAPI(v, check_prototype = True)
+#app.run(port = 8080)
 ```
-
-library(reticulate)
-
-venv_path \<- normalizePath(".venv", mustWork = TRUE)
-
-Sys.setenv(RETICULATE_PYTHON = paste0(venv_path, "/Scripts/python.exe"))
-
-reticulate::use_virtualenv(venv_path, required = TRUE)
-
-app.run(port = 8080)

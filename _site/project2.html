@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DevOps - Proof 1 - Penguins EDA</title>
+<title>DevOps - Species - Data Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -125,14 +125,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./project.html" rel="" target="">
- <span class="menu-text">Data Visualization</span></a>
+ <span class="menu-text">Species - Data Visualization</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./project2.html" rel="" target="">
- <span class="menu-text">Data Visualization</span></a>
+    <a class="nav-link active" href="./project2.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Species - Data Modeling</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./eda.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="./project3.html" rel="" target="">
+ <span class="menu-text">Island - Data Visualization</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./project4.html" rel="" target="">
+ <span class="menu-text">Species - Data Modeling</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./eda.html" rel="" target="">
  <span class="menu-text">Proof 1 - Penguins EDA</span></a>
   </li>  
   <li class="nav-item">
@@ -155,8 +163,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#penguin-size-and-mass-by-sex-and-species" id="toc-penguin-size-and-mass-by-sex-and-species" class="nav-link active" data-scroll-target="#penguin-size-and-mass-by-sex-and-species">Penguin Size and Mass by Sex and Species</a></li>
-  <li><a href="#penguin-size-vs-mass-by-species" id="toc-penguin-size-vs-mass-by-species" class="nav-link" data-scroll-target="#penguin-size-vs-mass-by-species">Penguin Size vs Mass by Species</a></li>
+  <li><a href="#training-and-testing-data" id="toc-training-and-testing-data" class="nav-link active" data-scroll-target="#training-and-testing-data">Training and Testing Data</a></li>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis">Linear Discriminant Analysis</a></li>
   </ul>
 </nav>
     </div>
@@ -165,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Proof 1 - Penguins EDA</h1>
+<h1 class="title">Species - Data Modeling</h1>
 </div>
 
 
@@ -180,151 +188,117 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="penguin-size-and-mass-by-sex-and-species" class="level2">
-<h2 class="anchored" data-anchor-id="penguin-size-and-mass-by-sex-and-species">Penguin Size and Mass by Sex and Species</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dbplyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(duckdb)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr2)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(duckdb<span class="sc">::</span><span class="fu">duckdb</span>(), <span class="at">dbdir =</span> <span class="st">"my-db.duckdb"</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">tbl</span>(con, <span class="st">"penguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ISLR2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_classic</span>())</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">=</span> palmerpenguins<span class="sc">::</span>penguins</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">=</span> <span class="fu">na.omit</span>(penguins) <span class="co">#Eliminates rows with N/A values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<section id="training-and-testing-data" class="level2">
+<h2 class="anchored" data-anchor-id="training-and-testing-data">Training and Testing Data</h2>
+<p>Before modeling, it is useful to split the data into a training and a test set. This allows estimating the test error by evaluating each model’s performance on the test set. Stratifying by species ensures that the proportions of each species in each the test and training set are equal. This split is an 80/20 split.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species, sex) <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ends_with</span>(<span class="st">"mm"</span>) <span class="sc">|</span> <span class="fu">ends_with</span>(<span class="st">"g"</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      \(x) <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>penguins_split <span class="ot">=</span> <span class="fu">initial_split</span>(penguins, <span class="at">prop =</span> <span class="fl">0.8</span>, <span class="at">strata =</span> species)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>penguins_train <span class="ot">=</span> <span class="fu">training</span>(penguins_split)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>penguins_test <span class="ot">=</span> <span class="fu">testing</span>(penguins_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 9%">
-<col style="width: 19%">
-<col style="width: 18%">
-<col style="width: 23%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">species</th>
-<th style="text-align: left;">sex</th>
-<th style="text-align: right;">bill_length_mm</th>
-<th style="text-align: right;">bill_depth_mm</th>
-<th style="text-align: right;">flipper_length_mm</th>
-<th style="text-align: right;">body_mass_g</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">37.84000</td>
-<td style="text-align: right;">18.32000</td>
-<td style="text-align: right;">185.6000</td>
-<td style="text-align: right;">3540.000</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: right;">37.25753</td>
-<td style="text-align: right;">17.62192</td>
-<td style="text-align: right;">187.7945</td>
-<td style="text-align: right;">3368.836</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Adelie</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: right;">40.39041</td>
-<td style="text-align: right;">19.07260</td>
-<td style="text-align: right;">192.4110</td>
-<td style="text-align: right;">4043.493</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Chinstrap</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: right;">46.57353</td>
-<td style="text-align: right;">17.58824</td>
-<td style="text-align: right;">191.7353</td>
-<td style="text-align: right;">3527.206</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Chinstrap</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: right;">51.09412</td>
-<td style="text-align: right;">19.25294</td>
-<td style="text-align: right;">199.9118</td>
-<td style="text-align: right;">3938.971</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Gentoo</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">45.62500</td>
-<td style="text-align: right;">14.55000</td>
-<td style="text-align: right;">215.7500</td>
-<td style="text-align: right;">4587.500</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Gentoo</td>
-<td style="text-align: left;">female</td>
-<td style="text-align: right;">45.56379</td>
-<td style="text-align: right;">14.23793</td>
-<td style="text-align: right;">212.7069</td>
-<td style="text-align: right;">4679.741</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Gentoo</td>
-<td style="text-align: left;">male</td>
-<td style="text-align: right;">49.47377</td>
-<td style="text-align: right;">15.71803</td>
-<td style="text-align: right;">221.5410</td>
-<td style="text-align: right;">5484.836</td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </section>
-<section id="penguin-size-vs-mass-by-species" class="level2">
-<h2 class="anchored" data-anchor-id="penguin-size-vs-mass-by-species">Penguin Size vs Mass by Species</h2>
+<section id="linear-discriminant-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="linear-discriminant-analysis">Linear Discriminant Analysis</h2>
+<p>The simplest approach to classification is likely logistic regression, and for binary classification, it has reasonably good performance. Unfortunately, the “species” variable can take 3 different values, so this isn’t ideal. Instead, use LDA, which seeks to find linear combinations of features that separate two or more classes.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color =</span> species)) <span class="sc">+</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lda_spec <span class="ot">=</span> <span class="fu">discrim_linear</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">=</span> lda_spec <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(species <span class="sc">~</span> bill_length_mm <span class="sc">+</span> bill_depth_mm <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> penguins_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Outputting the fitted model gives some useful information…</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lda_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+Call:
+lda(species ~ bill_length_mm + bill_depth_mm + flipper_length_mm + 
+    body_mass_g, data = data)
+
+Prior probabilities of groups:
+   Adelie Chinstrap    Gentoo 
+0.4377358 0.2037736 0.3584906 
+
+Group means:
+          bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+Adelie          38.91552      18.39138          190.5431    3721.983
+Chinstrap       48.88704      18.39630          195.7963    3731.019
+Gentoo          47.40211      14.90421          216.8421    5062.895
+
+Coefficients of linear discriminants:
+                           LD1          LD2
+bill_length_mm    -0.079917833 -0.403427627
+bill_depth_mm      1.037202775 -0.001591007
+flipper_length_mm -0.090586781  0.015689977
+body_mass_g       -0.001306911  0.001593688
+
+Proportion of trace:
+   LD1    LD2 
+0.8735 0.1265 </code></pre>
+</div>
+</div>
+<p>…but it’s far more useful to get a visualization of the model.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="eda_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="project2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>LD1 and LD2 are linear combinations of the 4 predictors, the coefficients of which can be seen in the output of the fitted model. Here, it is evident that the model has done a reasonably good job differentiating the three species from each other. The Gentoo penguins are well-separated from the other two, and though there may be a little overlap between the Adelie and Chinstrap penguin clusters, they are relatively separate.</p>
+<p>Next, calculate the performance of the model on the test set.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(con)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="at">lda_acc =</span> <span class="fu">augment</span>(lda_fit, <span class="at">new_data =</span> penguins_test) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(<span class="at">truth =</span> species, <span class="at">estimate =</span> .pred_class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass         1</code></pre>
 </div>
-<p>renv::activate()</p>
-<p>library(reticulate)</p>
-<p>reticulate::use_virtualenv(normalizePath(“.venv”, mustWork = TRUE), required = TRUE)</p>
+</div>
+<p>The model predicted every penguin in the test set accurately.</p>
 
 
 </section>

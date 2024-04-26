@@ -1,5 +1,5 @@
 ---
-title: "Penguins EDA"
+title: "Proof 1 - Penguins EDA"
 format:
   html:
     code-fold: true
@@ -7,7 +7,7 @@ format:
 
 ## Penguin Size and Mass by Sex and Species
 
-```{r}
+```{r, message=F}
 library(palmerpenguins)
 library(dplyr)
 library(dbplyr)
@@ -21,7 +21,7 @@ con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "my-db.duckdb")
 df <- dplyr::tbl(con, "penguins")
 ```
 
-```{r}
+```{r, message=F}
 df %>%
   group_by(species, sex) %>%
   summarise(
@@ -36,12 +36,19 @@ df %>%
 
 ## Penguin Size vs Mass by Species
 
-```{r}
+```{r, warning=F, message=F}
 df %>%
   ggplot(aes(x = bill_length_mm, y = body_mass_g, color = species)) +
   geom_point() + 
   geom_smooth(method = "lm")
+```
+
+```{r, warning=F}
 DBI::dbDisconnect(con)
 ```
 
 renv::activate()
+
+library(reticulate)
+
+reticulate::use_virtualenv(normalizePath(".venv", mustWork = TRUE), required = TRUE)

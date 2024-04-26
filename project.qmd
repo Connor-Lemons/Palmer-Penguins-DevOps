@@ -1,0 +1,91 @@
+---
+title: "Species - Data Visualization"
+format:
+  html:
+    code-fold: true
+---
+
+## Install Required Packages
+
+```{r, message=F}
+library(palmerpenguins)
+library(tidymodels)
+library(tidyverse)
+library(ISLR2)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(MASS)
+
+theme_set(theme_classic())
+tidymodels_prefer()
+penguins = palmerpenguins::penguins
+
+penguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting
+```
+
+## View the Data
+
+```{r}
+head(penguins)
+```
+
+## Visualize the Data
+
+The goal here is to build a model which can predict the species of penguin based on the other parameters provided in the dataset. In order to get a better sense of which variables might be the strongest predictors of species, generate box plots for each numerical variable with each of the three species.
+
+```{r}
+penguins_long <- pivot_longer(penguins, 
+                              cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g),
+                              names_to = "Measurement",
+                              values_to = "Value")
+
+ggplot(penguins_long, aes(x = species, y = Value, fill = species)) +
+  geom_boxplot() + 
+  facet_wrap(~ Measurement, scales = "free") +
+  labs(title = "Comparison of Penguin Measurements by Species",
+       x = "Species",
+       y = "Value") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Improve x-axis label readability
+```
+
+From these plots, on average, Gentoo penguins are heavier, Adelie penguins have shorter bills, and Chinstrap penguins have longer/deeper bills.
+
+To get a little more detail, generate 4 plots, one for each variable, that show the distribution of each species of penguin relative to that variable.
+
+```{r}
+ggplot(data = penguins, aes(x = bill_depth_mm, fill = species, color = species)) +
+  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing
+  scale_fill_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  scale_color_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  labs(title = "Distribution of Bill Depth by Penguin Species",
+       x = "Bill Depth (mm)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = bill_length_mm, fill = species, color = species)) +
+  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing
+  scale_fill_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  scale_color_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  labs(title = "Distribution of Bill Length by Penguin Species",
+       x = "Bill Length (mm)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = body_mass_g, fill = species, color = species)) +
+  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing
+  scale_fill_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  scale_color_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  labs(title = "Distribution of Body Mass by Penguin Species",
+       x = "Body Mass (g)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = flipper_length_mm, fill = species, color = species)) +
+  geom_density(alpha = 0.5, adjust = 1) +  # Set transparency and adjust for smoothing
+  scale_fill_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  scale_color_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue")) +
+  labs(title = "Distribution of Flipper Length by Penguin Species",
+       x = "Flipper Length (mm)",
+       y = "Density")
+```
+
+Note that some of these distributions look almost bimodal, or at least have some deviation from a unimodal distribution at a given point. Because these are all physical characteristics, it is expected that there will be a difference between male and female penguins. These secondary bumps are likely the result of not filtering for sex before plotting. Nonetheless, these plots give a good idea of the distributions of each species in the context of each numerical variable. For example, when looking at the flipper lengths of Adelie and Gentoo penguins, there is almost no overlap in the distributions, or in other words, almost every Adelie penguins' flippers are smaller than Gentoo penguins' flippers. By contrast, when looking at Adelie and Chinstrap penguins in the context of body mass, there is almost no difference in the location of the peak, which means that it is unlikely that body mass will be the most important feature when attempting to distinguish between Adelie and Chinstrap penguins.

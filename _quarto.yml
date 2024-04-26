@@ -8,6 +8,10 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - project.qmd
+      - project2.qmd
+      - project3.qmd
+      - project4.qmd
       - eda.qmd
       - model.qmd
 

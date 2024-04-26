@@ -1,0 +1,89 @@
+---
+title: "Island - Data Visualization"
+format:
+  html:
+    code-fold: true
+---
+
+## Install Required Packages
+
+```{r, message=F}
+library(palmerpenguins)
+library(tidymodels)
+library(tidyverse)
+library(ISLR2)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(MASS)
+
+theme_set(theme_classic())
+tidymodels_prefer()
+penguins = palmerpenguins::penguins
+
+penguins = na.omit(penguins) #Eliminates rows with N/A values for cleaner plotting
+```
+
+## View the Data
+
+```{r}
+head(penguins)
+```
+
+## Visualize the Data
+
+As before with the species visualization, the goal here is to visualize the relationship between the island the penguin lives on and each of the 4 numeric variables.
+
+```{r}
+penguins_long <- pivot_longer(penguins, 
+                              cols = c(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g),
+                              names_to = "Measurement",
+                              values_to = "Value")
+
+ggplot(penguins_long, aes(x = island, y = Value, fill = island)) +
+  geom_boxplot() + 
+  facet_wrap(~ Measurement, scales = "free") +
+  labs(title = "Comparison of Penguin Measurements by Island",
+       x = "Island",
+       y = "Value") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Improve x-axis label readability
+```
+
+To get a little more detail, generate 4 plots, one for each variable, that show the distribution of each island relative to that variable.
+
+```{r}
+ggplot(data = penguins, aes(x = bill_depth_mm, fill = island, color = island)) +
+  geom_density(alpha = 0.5, adjust = 1) +
+  scale_fill_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  scale_color_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  labs(title = "Distribution of Bill Depth by Island",
+       x = "Bill Depth (mm)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = bill_length_mm, fill = island, color = island)) +
+  geom_density(alpha = 0.5, adjust = 1) +
+  scale_fill_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  scale_color_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  labs(title = "Distribution of Bill Length by Island",
+       x = "Bill Length (mm)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = body_mass_g, fill = island, color = island)) +
+  geom_density(alpha = 0.5, adjust = 1) +
+  scale_fill_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  scale_color_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  labs(title = "Distribution of Body Mass by Island",
+       x = "Body Mass (g)",
+       y = "Density")
+
+ggplot(data = penguins, aes(x = flipper_length_mm, fill = island, color = island)) +
+  geom_density(alpha = 0.5, adjust = 1) +
+  scale_fill_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  scale_color_manual(values = c("Biscoe" = "red", "Dream" = "green", "Torgersen" = "blue")) +
+  labs(title = "Distribution of Flipper Length by Island",
+       x = "Flipper Length (mm)",
+       y = "Density")
+```
+
+Unlike the species graphs, the distributions for these graphs are not nearly as tight, likely because the physical characteristics of penguins rely more on the species of penguin than the location.
