@@ -16,6 +16,7 @@ library(plotly)
 library(MASS)
 library(discrim)
 library(ggpubr)
+library(klaR)
 
 theme_set(theme_classic())
 tidymodels_prefer()
