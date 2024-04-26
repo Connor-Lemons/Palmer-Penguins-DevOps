@@ -2,10 +2,6 @@
 title: "DevOps"
 ---
 
-This is a Quarto website.
+## Connor Emmons
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+This is the website I made following along with [DevOps for Data Science (do4ds.com)](https://do4ds.com/). I hope you enjoy!

@@ -74,14 +74,14 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "This website investigates the Palmer Penguins data set. Specifically, it helps to visualize the data present in this data set in a number of different ways and explores different models in order to predict the species and island of origin of the penguins.\nNote: I left the last two tabs as proof of completion for the labs, but they are not part of what I consider to be the final product.\nThe GitHub repo for this project can be found here: Connor-Lemons/Palmer-Penguins-DevOps: Chapters 1-6 of DevOps for Data Science (github.com)"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "DevOps",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "This is the website I made following along with DevOps for Data Science (do4ds.com). I hope you enjoy!"
   },
   {
     "objectID": "project.html",
@@ -201,5 +201,12 @@
     "title": "Species - Data Modeling",
     "section": "K-Nearest Neighbors with Cross Validation",
     "text": "K-Nearest Neighbors with Cross Validation\nK-nearest neighbors attempts to predict the class of a given point based off of the k nearest neighbors. With this model, use k-fold cross validation to determine the optimal number of neighbors to consider.\nFirst, define the parameter to tune (in this case, the number of neighbors) and create the workflow.\n\n\nCode\nknn_spec &lt;- nearest_neighbor(neighbors = tune()) %&gt;%\n  set_mode(\"classification\") %&gt;%\n  set_engine(\"kknn\")\n\nknn_rec = recipe(island ~ bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g,\n      data = penguins_train_island)\n\nknn_wf = workflow() |&gt;\n  add_recipe(knn_rec) |&gt;\n  add_model(knn_spec)\n\n\nNext, split the data into different folds for the cross validation.\n\n\nCode\npenguins_folds = vfold_cv(penguins_train_island, v = 10, strata = island)\n\n\nCreate the grid of values to test in the cross validation and perform the cross validation. In this case, test values 1-10.\n\n\nCode\nneighbor_grid &lt;- grid_regular(neighbors(range = c(1, 10)), levels = 10)\ntune_res = tune_grid(\n  object = knn_wf, \n  resamples = penguins_folds, \n  grid = neighbor_grid\n)\n\n\nVisualizing the results of the tune. The metric that the models will be evaluated on will be accuracy, though these plots also display other metrics that can be used.\n\n\nCode\nautoplot(tune_res)\n\n\n\n\n\nSelect the best value for k, finalize the workflow, and fit the final model. In this case, k=5 was optimal for accuracy.\n\n\nCode\n(best_neighbor = select_best(tune_res, metric = \"accuracy\"))\n\n\n# A tibble: 1 × 2\n  neighbors .config              \n      &lt;int&gt; &lt;chr&gt;                \n1         5 Preprocessor1_Model05\n\n\nCode\nfinal_wf = finalize_workflow(knn_wf, best_neighbor)\nfinal_fit = fit(final_wf, data = penguins_train_island)\n(knn_acc = augment(final_fit, new_data = penguins_test_island) |&gt;\n  accuracy(truth = island, estimate = .pred_class))\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706\n\n\nThe accuracy for this model was 0.706, which is similar to LDA. The final accuracy of each of the models are shown below.\n\n\nCode\nlda_acc_island\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706\n\n\nCode\nqda_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.676\n\n\nCode\nnb_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.735\n\n\nCode\nknn_acc\n\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.706"
+  },
+  {
+    "objectID": "index.html#connor-emmons",
+    "href": "index.html#connor-emmons",
+    "title": "DevOps",
+    "section": "",
+    "text": "This is the website I made following along with DevOps for Data Science (do4ds.com). I hope you enjoy!"
   }
 ]

@@ -2,8 +2,8 @@
 title: "About"
 ---
 
-About this site
+This website investigates the Palmer Penguins data set. Specifically, it helps to visualize the data present in this data set in a number of different ways and explores different models in order to predict the species and island of origin of the penguins.
 
-```{r}
-1 + 1
-```
+Note: I left the last two tabs as proof of completion for the labs, but they are not part of what I consider to be the final product.
+
+The GitHub repo for this project can be found here: [Connor-Lemons/Palmer-Penguins-DevOps: Chapters 1-6 of DevOps for Data Science (github.com)](https://github.com/Connor-Lemons/Palmer-Penguins-DevOps)
